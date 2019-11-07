@@ -1,0 +1,127 @@
+﻿@using VideoPlayerDenemeVideojs.Models
+@{
+    ViewBag.Title = "Home Page";
+    AkademinyaEntities db = new AkademinyaEntities();
+    var video = db.UyeVideo.FirstOrDefault(x => x.Id == 1);
+}
+
+<div class="container" style="margin-top:50px;background-color:gainsboro">
+    <div class="row">
+        <div class="col-md-9">
+            <video id="my_video_1" class="video-js vjs-default-skin" width="640px" height="267px"
+                   controls preload="none" poster='~/Content/Videos/foto-5.jpg'
+                   data-setup='{ "aspectRatio":"640:267", "playbackRates": [1, 1.5, 2] }'>
+                <source src="@video.Video.Link" type='video/mp4' />
+                <source src="@video.Video.Link" type='video/webm' />
+            </video>
+        </div>
+        <div class="col-md-3">
+            <div class="kd">
+                <button class="accordion">1. Bölüm</button>
+                <div class="panel">
+                    <p id="sure">1.video</p> <hr />
+                    <p>2.video</p><hr />
+                    <p>3.video</p><hr />
+                    <p>4.video</p><hr />
+                </div>
+                <button class="accordion">2. Bölüm</button>
+                <div class="panel">
+                    <p>5.video</p><hr />
+                    <p>6.video</p><hr />
+                    <p>7.video</p><hr />
+                    <p>8.video</p><hr />
+                </div>
+            </div>
+            <button onclick="getCurTime()" id="hey" type="button">Get current time position</button>
+            <button onclick="setCurTime()" type="button">Set time position to 5 seconds</button><br>
+        </div>
+    </div>
+</div>
+
+    <input type="hidden" id="deger" value="@video.KalinanZaman" />
+
+
+
+    <style>
+        .vjs-brand-container {
+            max-width: 25px;
+        }
+
+        img {
+            height: 100%;
+        }
+    </style>
+    <script src='~/Scripts/jquery-3.3.1.min.js'></script>
+    <script>
+        //accordion baş
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+        //accordion son
+        //video
+        var vid = document.getElementById("my_video_1");
+        vid.currentTime = $("#deger").val();// burda videonun başlangıç süresi ayarlandı
+        //$(vid.currentTime).on("change", function{})
+
+        var x = setInterval(function () {
+            $("#sure").text(vid.currentTime);
+            $("#deger").val(vid.currentTime);
+            //fonkfonk();
+           
+        }, 5000);
+
+        //heyeyeyeye
+        window.onbeforeunload = function () {
+
+            fonkfonk();
+            //return false;
+        };
+
+
+
+        function fonkfonk() {
+            var deger = $("#deger").val();
+
+            $.ajax({
+                url: "Index",
+                async: false,
+                data: { deger },
+                type: "post",
+                success: function (sonuc) {
+                    if (sonuc) {
+                        
+                    }
+                    else {
+                        
+                    }
+                }
+            })
+        }
+       
+        //yoyoyoyoyo
+
+        function getCurTime() {
+            alert(vid.currentTime);
+        }
+
+        function setCurTime() {
+            vid.currentTime = 65;
+        }
+    </script>
+    <script language="JavaScript">
+        //Video ya sağ tıklama kapalı
+        document.getElementById("my_video_1").addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        }, false);
+    </script>

@@ -1,0 +1,444 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="AkademinyaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Kurs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Silindi" Type="bit" Nullable="false" />
+          <Property Name="Ad" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Acikklama" Type="nvarchar(max)" />
+          <Property Name="Icerik" Type="nvarchar(max)" />
+          <Property Name="Fiyat" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="SonGuncellemeTarih" Type="smalldatetime" />
+          <Property Name="KategoriID" Type="int" />
+          <Property Name="UstKategoriID" Type="int" />
+          <Property Name="Resim" Type="nvarchar(max)" />
+          <Property Name="Ücretsiz" Type="bit" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Uye">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Mail" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TelefonNo" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="CookieGuid" Type="nvarchar(max)" />
+          <Property Name="Sifre" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="UyeKurs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KursID" Type="int" Nullable="false" />
+          <Property Name="UyeID" Type="int" Nullable="false" />
+          <Property Name="Aktif" Type="bit" />
+          <Property Name="KursYorum" Type="nvarchar" MaxLength="500" />
+          <Property Name="KursPuan" Type="int" />
+          <Property Name="DegerlendirmeTarihi" Type="smalldatetime" Nullable="false" />
+          <Property Name="PuanVerdi" Type="bit" />
+        </EntityType>
+        <EntityType Name="UyeVideo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="VideoID" Type="int" />
+          <Property Name="UyeID" Type="int" />
+          <Property Name="Izlendi" Type="bit" />
+          <Property Name="KalinanZaman" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Video">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KursID" Type="int" />
+          <Property Name="VideoAdı" Type="nvarchar" MaxLength="50" />
+          <Property Name="Suresi" Type="nvarchar" MaxLength="50" />
+          <Property Name="BolumID" Type="int" />
+          <Property Name="Link" Type="nvarchar(max)" />
+        </EntityType>
+        <Association Name="FK_UyeKurs_Kurs">
+          <End Role="Kurs" Type="Self.Kurs" Multiplicity="1" />
+          <End Role="UyeKurs" Type="Self.UyeKurs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kurs">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UyeKurs">
+              <PropertyRef Name="KursID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UyeKurs_Uye">
+          <End Role="Uye" Type="Self.Uye" Multiplicity="1" />
+          <End Role="UyeKurs" Type="Self.UyeKurs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Uye">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UyeKurs">
+              <PropertyRef Name="UyeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UyeVideo_Uye">
+          <End Role="Uye" Type="Self.Uye" Multiplicity="0..1" />
+          <End Role="UyeVideo" Type="Self.UyeVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Uye">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UyeVideo">
+              <PropertyRef Name="UyeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UyeVideo_Video">
+          <End Role="Video" Type="Self.Video" Multiplicity="0..1" />
+          <End Role="UyeVideo" Type="Self.UyeVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Video">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UyeVideo">
+              <PropertyRef Name="VideoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Video_Kurs">
+          <End Role="Kurs" Type="Self.Kurs" Multiplicity="0..1" />
+          <End Role="Video" Type="Self.Video" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kurs">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Video">
+              <PropertyRef Name="KursID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AkademinyaModelStoreContainer">
+          <EntitySet Name="Kurs" EntityType="Self.Kurs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Uye" EntityType="Self.Uye" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UyeKurs" EntityType="Self.UyeKurs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UyeVideo" EntityType="Self.UyeVideo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Video" EntityType="Self.Video" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_UyeKurs_Kurs" Association="Self.FK_UyeKurs_Kurs">
+            <End Role="Kurs" EntitySet="Kurs" />
+            <End Role="UyeKurs" EntitySet="UyeKurs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UyeKurs_Uye" Association="Self.FK_UyeKurs_Uye">
+            <End Role="Uye" EntitySet="Uye" />
+            <End Role="UyeKurs" EntitySet="UyeKurs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UyeVideo_Uye" Association="Self.FK_UyeVideo_Uye">
+            <End Role="Uye" EntitySet="Uye" />
+            <End Role="UyeVideo" EntitySet="UyeVideo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UyeVideo_Video" Association="Self.FK_UyeVideo_Video">
+            <End Role="Video" EntitySet="Video" />
+            <End Role="UyeVideo" EntitySet="UyeVideo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Video_Kurs" Association="Self.FK_Video_Kurs">
+            <End Role="Kurs" EntitySet="Kurs" />
+            <End Role="Video" EntitySet="Video" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="AkademinyaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Kurs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Silindi" Type="Boolean" Nullable="false" />
+          <Property Name="Ad" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Acikklama" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Icerik" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Fiyat" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="SonGuncellemeTarih" Type="DateTime" Precision="0" />
+          <Property Name="KategoriID" Type="Int32" />
+          <Property Name="UstKategoriID" Type="Int32" />
+          <Property Name="Resim" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Ücretsiz" Type="Boolean" />
+          <NavigationProperty Name="UyeKurs" Relationship="Self.FK_UyeKurs_Kurs" FromRole="Kurs" ToRole="UyeKurs" />
+          <NavigationProperty Name="Video" Relationship="Self.FK_Video_Kurs" FromRole="Kurs" ToRole="Video" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Uye">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Mail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TelefonNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CookieGuid" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Sifre" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UyeKurs" Relationship="Self.FK_UyeKurs_Uye" FromRole="Uye" ToRole="UyeKurs" />
+          <NavigationProperty Name="UyeVideo" Relationship="Self.FK_UyeVideo_Uye" FromRole="Uye" ToRole="UyeVideo" />
+        </EntityType>
+        <EntityType Name="UyeKurs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KursID" Type="Int32" Nullable="false" />
+          <Property Name="UyeID" Type="Int32" Nullable="false" />
+          <Property Name="Aktif" Type="Boolean" />
+          <Property Name="KursYorum" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="KursPuan" Type="Int32" />
+          <Property Name="DegerlendirmeTarihi" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PuanVerdi" Type="Boolean" />
+          <NavigationProperty Name="Kurs" Relationship="Self.FK_UyeKurs_Kurs" FromRole="UyeKurs" ToRole="Kurs" />
+          <NavigationProperty Name="Uye" Relationship="Self.FK_UyeKurs_Uye" FromRole="UyeKurs" ToRole="Uye" />
+        </EntityType>
+        <EntityType Name="UyeVideo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VideoID" Type="Int32" />
+          <Property Name="UyeID" Type="Int32" />
+          <Property Name="Izlendi" Type="Boolean" />
+          <Property Name="KalinanZaman" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Uye" Relationship="Self.FK_UyeVideo_Uye" FromRole="UyeVideo" ToRole="Uye" />
+          <NavigationProperty Name="Video" Relationship="Self.FK_UyeVideo_Video" FromRole="UyeVideo" ToRole="Video" />
+        </EntityType>
+        <EntityType Name="Video">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KursID" Type="Int32" />
+          <Property Name="VideoAdı" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Suresi" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BolumID" Type="Int32" />
+          <Property Name="Link" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Kurs" Relationship="Self.FK_Video_Kurs" FromRole="Video" ToRole="Kurs" />
+          <NavigationProperty Name="UyeVideo" Relationship="Self.FK_UyeVideo_Video" FromRole="Video" ToRole="UyeVideo" />
+        </EntityType>
+        <Association Name="FK_UyeKurs_Kurs">
+          <End Role="Kurs" Type="Self.Kurs" Multiplicity="1" />
+          <End Role="UyeKurs" Type="Self.UyeKurs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kurs">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UyeKurs">
+              <PropertyRef Name="KursID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Video_Kurs">
+          <End Role="Kurs" Type="Self.Kurs" Multiplicity="0..1" />
+          <End Role="Video" Type="Self.Video" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kurs">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Video">
+              <PropertyRef Name="KursID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UyeKurs_Uye">
+          <End Role="Uye" Type="Self.Uye" Multiplicity="1" />
+          <End Role="UyeKurs" Type="Self.UyeKurs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Uye">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UyeKurs">
+              <PropertyRef Name="UyeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UyeVideo_Uye">
+          <End Role="Uye" Type="Self.Uye" Multiplicity="0..1" />
+          <End Role="UyeVideo" Type="Self.UyeVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Uye">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UyeVideo">
+              <PropertyRef Name="UyeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UyeVideo_Video">
+          <End Role="Video" Type="Self.Video" Multiplicity="0..1" />
+          <End Role="UyeVideo" Type="Self.UyeVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Video">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UyeVideo">
+              <PropertyRef Name="VideoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AkademinyaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Kurs" EntityType="Self.Kurs" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="Uye" EntityType="Self.Uye" />
+          <EntitySet Name="UyeKurs" EntityType="Self.UyeKurs" />
+          <EntitySet Name="UyeVideo" EntityType="Self.UyeVideo" />
+          <EntitySet Name="Video" EntityType="Self.Video" />
+          <AssociationSet Name="FK_UyeKurs_Kurs" Association="Self.FK_UyeKurs_Kurs">
+            <End Role="Kurs" EntitySet="Kurs" />
+            <End Role="UyeKurs" EntitySet="UyeKurs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Video_Kurs" Association="Self.FK_Video_Kurs">
+            <End Role="Kurs" EntitySet="Kurs" />
+            <End Role="Video" EntitySet="Video" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UyeKurs_Uye" Association="Self.FK_UyeKurs_Uye">
+            <End Role="Uye" EntitySet="Uye" />
+            <End Role="UyeKurs" EntitySet="UyeKurs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UyeVideo_Uye" Association="Self.FK_UyeVideo_Uye">
+            <End Role="Uye" EntitySet="Uye" />
+            <End Role="UyeVideo" EntitySet="UyeVideo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UyeVideo_Video" Association="Self.FK_UyeVideo_Video">
+            <End Role="Video" EntitySet="Video" />
+            <End Role="UyeVideo" EntitySet="UyeVideo" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="AkademinyaModelStoreContainer" CdmEntityContainer="AkademinyaEntities">
+          <EntitySetMapping Name="Kurs">
+            <EntityTypeMapping TypeName="AkademinyaModel.Kurs">
+              <MappingFragment StoreEntitySet="Kurs">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Silindi" ColumnName="Silindi" />
+                <ScalarProperty Name="Ad" ColumnName="Ad" />
+                <ScalarProperty Name="Acikklama" ColumnName="Acikklama" />
+                <ScalarProperty Name="Icerik" ColumnName="Icerik" />
+                <ScalarProperty Name="Fiyat" ColumnName="Fiyat" />
+                <ScalarProperty Name="SonGuncellemeTarih" ColumnName="SonGuncellemeTarih" />
+                <ScalarProperty Name="KategoriID" ColumnName="KategoriID" />
+                <ScalarProperty Name="UstKategoriID" ColumnName="UstKategoriID" />
+                <ScalarProperty Name="Resim" ColumnName="Resim" />
+                <ScalarProperty Name="Ücretsiz" ColumnName="Ücretsiz" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="AkademinyaModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Uye">
+            <EntityTypeMapping TypeName="AkademinyaModel.Uye">
+              <MappingFragment StoreEntitySet="Uye">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Mail" ColumnName="Mail" />
+                <ScalarProperty Name="TelefonNo" ColumnName="TelefonNo" />
+                <ScalarProperty Name="CookieGuid" ColumnName="CookieGuid" />
+                <ScalarProperty Name="Sifre" ColumnName="Sifre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UyeKurs">
+            <EntityTypeMapping TypeName="AkademinyaModel.UyeKurs">
+              <MappingFragment StoreEntitySet="UyeKurs">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="KursID" ColumnName="KursID" />
+                <ScalarProperty Name="UyeID" ColumnName="UyeID" />
+                <ScalarProperty Name="Aktif" ColumnName="Aktif" />
+                <ScalarProperty Name="KursYorum" ColumnName="KursYorum" />
+                <ScalarProperty Name="KursPuan" ColumnName="KursPuan" />
+                <ScalarProperty Name="DegerlendirmeTarihi" ColumnName="DegerlendirmeTarihi" />
+                <ScalarProperty Name="PuanVerdi" ColumnName="PuanVerdi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UyeVideo">
+            <EntityTypeMapping TypeName="AkademinyaModel.UyeVideo">
+              <MappingFragment StoreEntitySet="UyeVideo">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="VideoID" ColumnName="VideoID" />
+                <ScalarProperty Name="UyeID" ColumnName="UyeID" />
+                <ScalarProperty Name="Izlendi" ColumnName="Izlendi" />
+                <ScalarProperty Name="KalinanZaman" ColumnName="KalinanZaman" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Video">
+            <EntityTypeMapping TypeName="AkademinyaModel.Video">
+              <MappingFragment StoreEntitySet="Video">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="KursID" ColumnName="KursID" />
+                <ScalarProperty Name="VideoAdı" ColumnName="VideoAdı" />
+                <ScalarProperty Name="Suresi" ColumnName="Suresi" />
+                <ScalarProperty Name="BolumID" ColumnName="BolumID" />
+                <ScalarProperty Name="Link" ColumnName="Link" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
