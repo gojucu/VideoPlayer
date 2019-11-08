@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
     <link href="https://vjs.zencdn.net/7.6.5/video-js.css" rel="stylesheet">
+    
     @Styles.Render("~/Content/css")
 
 
@@ -41,7 +42,9 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
     <script src='https://vjs.zencdn.net/7.6.5/video.js'></script>
+
     <script src='~/Content/videojs-brand.min.js'></script>
     <script>
         var player = videojs('my_video_1');

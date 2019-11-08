@@ -17,10 +17,11 @@ namespace VideoPlayerDenemeVideojs.Controllers
         }
         
         [HttpPost]
-        public ActionResult Index(string deger)
+        public ActionResult Index(string deger, Boolean izlendimi)
         {
             UyeVideo uv = db.UyeVideo.FirstOrDefault(x => x.Id == 1);
             uv.KalinanZaman = deger;
+            uv.Izlendi = izlendimi;
             db.SaveChanges();
             return View();
         }
