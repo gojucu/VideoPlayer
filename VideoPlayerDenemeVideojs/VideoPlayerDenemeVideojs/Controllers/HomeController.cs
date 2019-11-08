@@ -11,19 +11,20 @@ namespace VideoPlayerDenemeVideojs.Controllers
     {
         AkademinyaEntities db = new AkademinyaEntities();
 
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
-            return View();
+            var UyeVideo = db.UyeVideo.FirstOrDefault(x => x.Id == id);
+            return View(UyeVideo);
         }
         
         [HttpPost]
-        public ActionResult Index(string deger, Boolean izlendimi)
+        public ActionResult Index(string deger, Boolean izlendimi, int id)
         {
-            UyeVideo uv = db.UyeVideo.FirstOrDefault(x => x.Id == 1);
+            UyeVideo uv = db.UyeVideo.FirstOrDefault(x => x.Id == id);
             uv.KalinanZaman = deger;
             uv.Izlendi = izlendimi;
             db.SaveChanges();
-            return View();
+            return Json(true,JsonRequestBehavior.AllowGet);
         }
 
 

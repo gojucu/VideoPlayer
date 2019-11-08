@@ -1,4 +1,5 @@
-﻿@using VideoPlayerDenemeVideojs.Models
+﻿@model VideoPlayerDenemeVideojs.Models.UyeVideo
+    @using VideoPlayerDenemeVideojs.Models
 @{
     ViewBag.Title = "Home Page";
     AkademinyaEntities db = new AkademinyaEntities();
@@ -11,18 +12,31 @@
             <video id="my_video_1" class="video-js vjs-default-skin" width="640px" height="267px"
                    controls preload="none" poster='~/Content/Videos/foto-5.jpg'
                    data-setup='{ "aspectRatio":"640:267", "playbackRates": [1, 1.5, 2] }'>
-                <source src="@video.Video.Link" type='video/mp4' />
-                <source src="@video.Video.Link" type='video/webm' />
+                <source src="@Model.Video.Link" type='video/mp4' />
+                <source src="@Model.Video.Link" type='video/webm' />
             </video>
         </div>
         <div class="col-md-3" style="background-color:gainsboro">
             <div class="kd">
                 <button class="accordion">1. Bölüm</button>
                 <div class="panel">
-                    <p id="sure">1.video</p> <hr />
-                    <p>2.video</p><hr />
-                    <p>3.video</p><hr />
-                    <p>4.video</p><hr />
+                    @foreach (var item in db.UyeVideo.ToList().Where(x => x.Video.KursID == 1))
+                    {
+                        <a href="@item.Id">@item.Video.VideoAdı</a>
+                        if (item.Izlendi == true)
+                        {
+                            <p style="display:inline-block;float:right">izlendi</p>
+                        }
+                        else
+                        {
+                            <p id="p-izlendi" style="display:inline-block;float:right">izlenmedi</p>
+                        }
+                        <hr />
+                    }
+                    @*<p id="sure">1.video</p> <hr />
+        <p>2.video</p><hr />
+        <p>3.video</p><hr />
+        <p>4.video</p><hr />*@
                 </div>
                 <button class="accordion">2. Bölüm</button>
                 <div class="panel">
@@ -37,8 +51,9 @@
         </div>
     </div>
 </div>
-<input type="hidden" id="deger" value="@video.KalinanZaman" />
-@if (video.Izlendi == true)
+<input type="hidden" id="deger" value="@Model.KalinanZaman" />
+<input type="hidden" id="id" value="@Model.Id" />
+@if (Model.Izlendi == true)
 {
     <input type="checkbox" id="izlendi" checked />
 }
@@ -82,16 +97,17 @@ else
     //var izlendimi = $("#izlendi").val();
     var izlendimi = $("#izlendi").is(":checked") ? true : false;
     var x = setInterval(function () {
-        $("#sure").text(vid.currentTime);
+        //$("#sure").text(vid.currentTime);
         $("#deger").val(vid.currentTime);
         izlendimi = $("#izlendi").is(":checked") ? true : false;
 
         var kalanSure = vid.duration - vid.currentTime;
-        if (kalanSure <= 15 && izlendimi != true) {
-            $("#izlendi").prop('checked', true);
+        if (kalanSure <= 15 && izlendimi != true) {//15 saniyeye düştüğünde uygunmu *****?
+            $("#izlendi").prop('checked', true);//Burda izlendi durumunu 15 saniyenin altında ise true yapıyoruz
+            $("#p-izlendi").text("izlendi");//Playlistte izlenmedi kısmını izlendiye çeviriyoruz
             fonkfonk();
         }
-    }, 5000);
+    }, 5000);//5 sanyiede bir yenilenmesi uygun mu *****?
 
     //heyeyeyeye
     window.onbeforeunload = function () {
@@ -103,11 +119,12 @@ else
     function fonkfonk() {
         var deger = $("#deger").val();
         izlendimi = $("#izlendi").is(":checked") ? true : false;
+        var id = $("#id").val();
 
         $.ajax({
             url: "Index",
             async: false,
-            data: { deger, izlendimi },
+            data: { deger, izlendimi, id },
             type: "post",
             success: function (sonuc) {
                 if (sonuc) {
